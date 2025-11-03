@@ -4,7 +4,7 @@ variable "vpc_cidr" {
 }
 
 variable "project_name" {
-  type = "string"
+  type = string
 }
 variable "environment" {
   type = string
@@ -19,14 +19,52 @@ variable "ig_tags" {
   type = map
   default = {}
 }
-
-variable "public_subnet_cidrs" {
+variable "nat_tags" {
   type = map
+  default = {}
+}
+variable "eip_tags" {
+  type = map
+  default = {}
 }
 
 variable "public_subnet_tags" {
   type = map
   default = {}
+}
+  variable "private_subnet_tags" {
+  type = map
+  default = {}
+}
+
+  variable "database_subnet_tags" {
+  type = map
+  default = {}
+}
+
+variable "public_route_table_tags" {
+  type = map
+  default = {}
+}
+
+variable "private_route_table_tags" {
+  type = map
+  default = {}
+}
+# variable "public_subnet_cidrs_module" {
+#   type = list
+# }
+
+# variable "private_subnet_cidrs_module" {
+#   type = list
+# }
+
+# variable "database_subnet_cidrs_module" {
+#   type = list
+# }
+
+variable "public_subnet_cidrs" {
+  type = map
 }
 
 variable "private_subnet_cidrs" {
@@ -34,7 +72,6 @@ variable "private_subnet_cidrs" {
   
 }
 
-variable "private_subnet_tags" {
+variable "database_subnet_cidrs" {
   type = map
-  default = {}
 }
