@@ -51,6 +51,13 @@ variable "private_route_table_tags" {
   type = map
   default = {}
 }
+
+variable "database_route_table_tags" {
+  type = map
+  default = {}
+}
+  
+
 # variable "public_subnet_cidrs_module" {
 #   type = list
 # }
@@ -64,14 +71,19 @@ variable "private_route_table_tags" {
 # }
 
 variable "public_subnet_cidrs" {
-  type = map
+  type = list
 }
 
 variable "private_subnet_cidrs" {
-  type = map
+  type = list
   
 }
 
 variable "database_subnet_cidrs" {
-  type = map
+  type = list
+}
+
+variable "is_peering_required" {
+  type = bool
+  default = true
 }

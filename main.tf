@@ -76,6 +76,7 @@ resource "aws_subnet" "database" {
   )
 }
 
+# Route Tables
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -88,7 +89,6 @@ tags = merge(
   )
 
 }
-
 
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
@@ -103,17 +103,28 @@ tags = merge(
   
 }
 
+resource "aws_route_table" "database" {
+  vpc_id = aws_vpc.main.id
+
+tags = merge(
+    local.common_tags,
+    var.database_route_table_tags,
+    {
+        Name = "${local.common_name_suffix}-database"
+    }
+  )
+  
+}
+
+# Public Route
 resource "aws_route" "public" {
   route_table_id = aws_route_table.public.id
-  destination_cidr_block = "0.0.0.0./0"   #Destination
+  destination_cidr_block = "0.0.0.0/0"   #Destination
   gateway_id = aws_internet_gateway.main.id    #target
   
 }
 
-resource "aws_route" "private" {
-  route_table_id = aws_route_table.public.id
-  
-}
+#EIP
 resource "aws_eip" "nat" {
   domain   = "vpc"
 
@@ -126,10 +137,10 @@ resource "aws_eip" "nat" {
   )
 }
 
-
+#NAT Gateway
 resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[0]       #us-east-1a
+  allocation_id = aws_eip.nat.id           #attach eip to nat gateway
+  subnet_id     = aws_subnet.public[0].id       #us-east-1a  NAT should be in public so created in public[0]
 
  tags = merge(
     local.common_tags,
@@ -144,7 +155,7 @@ resource "aws_nat_gateway" "nat" {
 
 #Private egress route through NAT
 resource "aws_route" "private" {
-  route_table_id            = aws_route_table.private.id
+  route_table_id            = aws_route_table.private.id  
   destination_cidr_block    = "0.0.0.0/0"
   nat_gateway_id = aws_nat_gateway.nat.id
 }
@@ -157,8 +168,8 @@ resource "aws_route" "database" {
 
 
 resource "aws_route_table_association" "public" {
-  count = length(var.public_subnet_cidrs)
-  subnet_id      = aws_subnet.public[count.index].id
+  count = length(var.public_route_table_tags)
+  subnet_id      = aws_subnet.public[count.index].id    #referenceing attributes using [*].id
   route_table_id = aws_route_table.public.id
 }
 
