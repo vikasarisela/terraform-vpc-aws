@@ -3,5 +3,5 @@ output "vpc_id" {
 }
 
 # output "aws_subnet" {
-#   value = 
+#   value = aws_subnet.public
 # }
