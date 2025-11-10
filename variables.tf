@@ -83,7 +83,7 @@ variable "database_subnet_cidrs" {
   type = list
 }
 
-variable "is_peering_required" {
-  type = bool
-  default = true
-}
+# variable "is_peering_required" {
+#   type = bool
+#   default = true
+# }
